@@ -15,7 +15,8 @@ LINE公式アカウントのリッチメニューはこのURLを指すだけで�
 
 ## 必要な設定（リポジトリ管理者が一度だけ行う）
 
-- Settings → Secrets and variables → Actions → `ANTHROPIC_API_KEY` を登録
+- ローカルで `claude setup-token` を実行し、Claude Pro/Maxのサブスクリプション経由のOAuthトークンを発行
+- `gh secret set CLAUDE_CODE_OAUTH_TOKEN --repo jobsoccer/jobsaka-jobs` で登録（サブスク利用分としてカウントされ、API従量課金は発生しない）
 - Settings → Pages → Source: `Deploy from a branch` / Branch: `main` / Folder: `/docs`
 
 ## 手動実行

@@ -18,9 +18,8 @@ jobs:
       - name: jleague-jobsスキルで求人を収集
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          show_full_output: true
           prompt: "/jleague-jobs jleague_jobs.md を最新の状態に更新してください。既存の求人は重複チェックし、掲載終了しているものは除外してください。"
           claude_args: |
             --allowedTools "WebFetch,WebSearch,Read,Write,Edit"
