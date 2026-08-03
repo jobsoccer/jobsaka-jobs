@@ -1,0 +1,39 @@
+name: 今週のJリーグ求人ページ更新
+
+on:
+  schedule:
+    - cron: '0 22 * * SUN'  # 日本時間 月曜7:00
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: jleague-jobsスキルで求人を収集
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: "/jleague-jobs jleague_jobs.md を最新の状態に更新してください。既存の求人は重複チェックし、掲載終了しているものは除外してください。"
+          claude_args: |
+            --allowedTools "WebFetch,WebSearch,Read,Write,Edit"
+            --max-turns 60
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 求人ページ（docs/index.html）を生成
+        run: python3 generate_page.py
+
+      - name: 変更をリポジトリに保存
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add jleague_jobs.md docs/index.html
+          git diff --cached --quiet || git commit -m "今週のJリーグ求人ページを更新 [skip ci]"
+          git push
