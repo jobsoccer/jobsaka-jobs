@@ -56,6 +56,7 @@ def sort_key(entry: dict) -> datetime:
 def render_card(entry: dict) -> str:
     club = html.escape(entry["club"])
     role = html.escape(entry["role"])
+    initial = html.escape(entry["club"][:1]) if entry["club"] else "⚽"
     tags = []
     if entry["employment"]:
         tags.append(html.escape(entry["employment"]))
@@ -69,26 +70,38 @@ def render_card(entry: dict) -> str:
     link_html = ""
     if entry["url"]:
         safe_url = html.escape(entry["url"], quote=True)
-        link_html = f'<a class="btn" href="{safe_url}" target="_blank" rel="noopener noreferrer">求人を見る →</a>'
+        link_html = f'<a class="btn" href="{safe_url}" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>'
 
     return f"""
     <li class="card">
       <div class="card-head">
-        <span class="club">{club}</span>
-        {date_html}
+        <span class="badge" aria-hidden="true">{initial}</span>
+        <div class="card-head-text">
+          <span class="club">{club}</span>
+          {date_html}
+        </div>
       </div>
-      <div class="role">{role}</div>
+      <h2 class="role">{role}</h2>
       <div class="tags">{tags_html}</div>
       {link_html}
     </li>"""
 
 
 def render_html(entries: list[dict], updated_at: str) -> str:
+    count = len(entries)
     if entries:
         cards = "\n".join(render_card(e) for e in entries)
         list_html = f'<ul class="cards">{cards}</ul>'
     else:
-        list_html = '<p class="empty">現在掲載中の求人はありません。来週の更新をお待ちください。</p>'
+        list_html = (
+            '<div class="empty">'
+            '<div class="empty-icon">⚽</div>'
+            '<p>現在掲載中の求人はありません。<br>来週の更新をお待ちください。</p>'
+            '</div>'
+        )
+    count_badge = (
+        f'<span class="count"><strong>{count}</strong> 件掲載中</span>' if entries else ""
+    )
 
     return f"""<!doctype html>
 <html lang="ja">
@@ -97,26 +110,42 @@ def render_html(entries: list[dict], updated_at: str) -> str:
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>今週のJリーグ求人｜ジョブサカ</title>
 <meta name="description" content="Jリーグクラブのフロントスタッフ求人を毎週自動更新でまとめています。">
+<meta property="og:title" content="今週のJリーグ求人｜ジョブサカ">
+<meta property="og:description" content="Jリーグクラブのフロントスタッフ求人を毎週自動更新でまとめています。">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
   :root {{
     color-scheme: light dark;
-    --bg: #f5f6f8;
+    --bg: #eef1ee;
     --card-bg: #ffffff;
-    --text: #1a1a1a;
-    --muted: #6b7280;
-    --accent: #0a6b3a;
-    --tag-bg: #eef2f0;
-    --border: #e5e7eb;
+    --text: #14201a;
+    --muted: #667a70;
+    --accent: #0a7a41;
+    --accent-2: #16b45f;
+    --accent-ink: #ffffff;
+    --tag-bg: #eaf3ee;
+    --tag-text: #3c6b52;
+    --border: #e4e9e5;
+    --shadow: 0 6px 22px rgba(16, 54, 34, 0.08);
+    --shadow-hover: 0 14px 34px rgba(16, 54, 34, 0.16);
   }}
   @media (prefers-color-scheme: dark) {{
     :root {{
-      --bg: #101314;
-      --card-bg: #1b1f20;
-      --text: #f2f2f2;
-      --muted: #9aa1a6;
-      --accent: #4ade80;
-      --tag-bg: #262b2c;
-      --border: #2c3234;
+      --bg: #0d1210;
+      --card-bg: #161d19;
+      --text: #eef3ef;
+      --muted: #8fa398;
+      --accent: #2ecc71;
+      --accent-2: #34e07f;
+      --accent-ink: #05130b;
+      --tag-bg: #1e2823;
+      --tag-text: #8fd6ab;
+      --border: #26312b;
+      --shadow: 0 6px 22px rgba(0, 0, 0, 0.4);
+      --shadow-hover: 0 14px 34px rgba(0, 0, 0, 0.55);
     }}
   }}
   * {{ box-sizing: border-box; }}
@@ -124,26 +153,104 @@ def render_html(entries: list[dict], updated_at: str) -> str:
     margin: 0;
     background: var(--bg);
     color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
-    line-height: 1.6;
+    font-family: "Zen Kaku Gothic New", -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Noto Sans JP", sans-serif;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
   }}
-  header {{
-    padding: 28px 20px 16px;
+
+  /* ===== Hero ===== */
+  .hero {{
+    position: relative;
+    overflow: hidden;
+    padding: 52px 20px 64px;
     text-align: center;
+    color: #fff;
+    background:
+      radial-gradient(1200px 260px at 50% -60px, rgba(255,255,255,0.18), transparent 70%),
+      linear-gradient(135deg, #063d23 0%, #0a7a41 55%, #12a555 100%);
   }}
-  header h1 {{
-    margin: 0 0 6px;
-    font-size: 1.5rem;
+  .hero::before {{
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: repeating-linear-gradient(
+      90deg,
+      rgba(255,255,255,0.05) 0 40px,
+      rgba(255,255,255,0) 40px 80px
+    );
+    pointer-events: none;
   }}
-  header p {{
-    margin: 0;
-    color: var(--muted);
-    font-size: 0.85rem;
+  .hero::after {{
+    content: "";
+    position: absolute;
+    left: 0; right: 0; bottom: -1px;
+    height: 34px;
+    background: var(--bg);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
   }}
-  main {{
-    max-width: 640px;
+  .hero-inner {{ position: relative; z-index: 1; }}
+  .brand {{
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.28);
+    backdrop-filter: blur(4px);
+  }}
+  .hero h1 {{
+    margin: 18px 0 10px;
+    font-size: clamp(1.7rem, 6vw, 2.4rem);
+    font-weight: 900;
+    letter-spacing: 0.01em;
+    line-height: 1.25;
+  }}
+  .hero .sub {{
     margin: 0 auto;
-    padding: 8px 16px 40px;
+    max-width: 30em;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.86);
+  }}
+  .hero-meta {{
+    margin-top: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }}
+  .count {{
+    display: inline-flex;
+    align-items: baseline;
+    gap: 5px;
+    padding: 7px 16px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--accent);
+    font-size: 0.82rem;
+    font-weight: 700;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.18);
+  }}
+  .count strong {{
+    font-family: "Montserrat", sans-serif;
+    font-size: 1.15rem;
+    line-height: 1;
+  }}
+  .updated {{
+    font-size: 0.76rem;
+    color: rgba(255,255,255,0.8);
+  }}
+
+  /* ===== Layout ===== */
+  main {{
+    max-width: 660px;
+    margin: 0 auto;
+    padding: 6px 16px 20px;
   }}
   .cards {{
     list-style: none;
@@ -151,86 +258,156 @@ def render_html(entries: list[dict], updated_at: str) -> str:
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
   }}
+
+  /* ===== Card ===== */
   .card {{
+    position: relative;
     background: var(--card-bg);
     border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 16px;
+    border-radius: 18px;
+    padding: 20px 20px 20px 24px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+  }}
+  .card::before {{
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 5px;
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+  }}
+  .card:hover {{
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
   }}
   .card-head {{
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 8px;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }}
+  .badge {{
+    flex: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    font-weight: 900;
+    font-size: 1.2rem;
+    color: var(--accent-ink);
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    box-shadow: 0 4px 12px rgba(10, 122, 65, 0.28);
+  }}
+  .card-head-text {{
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
   }}
   .club {{
     font-weight: 700;
     color: var(--accent);
-    font-size: 0.95rem;
+    font-size: 0.92rem;
   }}
   .date {{
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     color: var(--muted);
-    white-space: nowrap;
   }}
   .role {{
-    margin-top: 4px;
-    font-size: 1.05rem;
-    font-weight: 600;
+    margin: 14px 0 0;
+    font-size: 1.12rem;
+    font-weight: 700;
+    line-height: 1.45;
+    letter-spacing: 0.005em;
   }}
   .tags {{
-    margin-top: 8px;
+    margin-top: 12px;
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: 7px;
   }}
   .tag {{
     background: var(--tag-bg);
-    color: var(--muted);
+    color: var(--tag-text);
     font-size: 0.75rem;
-    padding: 3px 9px;
+    font-weight: 500;
+    padding: 4px 11px;
     border-radius: 999px;
   }}
   .btn {{
-    display: inline-block;
-    margin-top: 12px;
-    padding: 9px 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    padding: 10px 20px;
     border-radius: 999px;
-    background: var(--accent);
-    color: #062012;
+    background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    color: var(--accent-ink);
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.86rem;
     text-decoration: none;
+    box-shadow: 0 6px 16px rgba(10, 122, 65, 0.26);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
   }}
+  .btn:hover {{
+    transform: translateY(-1px);
+    box-shadow: 0 10px 22px rgba(10, 122, 65, 0.34);
+  }}
+  .btn-arrow {{ transition: transform 0.15s ease; }}
+  .btn:hover .btn-arrow {{ transform: translateX(3px); }}
+
+  /* ===== Empty ===== */
   .empty {{
     text-align: center;
     color: var(--muted);
-    padding: 40px 0;
+    padding: 48px 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
   }}
+  .empty-icon {{ font-size: 2.4rem; margin-bottom: 8px; }}
+  .empty p {{ margin: 0; }}
+
+  /* ===== Footer ===== */
   footer {{
     text-align: center;
-    padding: 24px 16px 40px;
+    padding: 8px 16px 48px;
     color: var(--muted);
     font-size: 0.8rem;
   }}
-  footer a {{
-    color: var(--muted);
+  .footer-brand {{
+    font-weight: 700;
+    color: var(--text);
+  }}
+  .footer-tagline {{ margin: 4px 0 0; }}
+
+  @media (prefers-reduced-motion: reduce) {{
+    * {{ transition: none !important; }}
   }}
 </style>
 </head>
 <body>
-<header>
-  <h1>⚽ 今週のJリーグ求人</h1>
-  <p>毎週自動更新・ジョブサカ｜最終更新：{html.escape(updated_at)}</p>
+<header class="hero">
+  <div class="hero-inner">
+    <span class="brand">⚽ ジョブサカ</span>
+    <h1>今週のJリーグ求人</h1>
+    <p class="sub">Jリーグクラブのフロントスタッフ求人を、毎週自動でまとめてお届けします。</p>
+    <div class="hero-meta">
+      {count_badge}
+      <span class="updated">最終更新：{html.escape(updated_at)}</span>
+    </div>
+  </div>
 </header>
 <main>
   {list_html}
 </main>
 <footer>
-  <p>ジョブサカ｜Jリーグ・スポーツビジネス界への転職を目指す人へ</p>
+  <p class="footer-brand">ジョブサカ</p>
+  <p class="footer-tagline">Jリーグ・スポーツビジネス界への転職を目指すすべての人へ</p>
 </footer>
 </body>
 </html>
