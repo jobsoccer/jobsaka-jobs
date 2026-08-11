@@ -9,6 +9,11 @@ OUTPUT = Path("docs/index.html")
 MAX_ENTRIES = 20
 JST = timezone(timedelta(hours=9))
 
+NOTE_SET_URL = "https://note.com/jobsoccer/m/m380a8dc93253"
+LINE_ADD_URL = "https://line.me/R/ti/p/%40968vguvu"
+# 求人カードを何件表示したあとに、リスト内CTAを差し込むか
+INLINE_CTA_AFTER = 5
+
 
 def parse_entries(text: str) -> list[dict]:
     blocks = re.split(r"\n-{3,}\n", text)
@@ -87,11 +92,46 @@ def render_card(entry: dict) -> str:
     </li>"""
 
 
+def render_inline_cta() -> str:
+    """求人カードの途中に差し込むCTA（最後まで読まない人にも届かせる）。"""
+    return f"""
+    <li class="cta-inline">
+      <p class="cta-inline-lead">気になる求人は見つかりましたか？</p>
+      <p class="cta-inline-body">Jクラブの募集は、突然出て突然締まります。
+      書類・面接・志望動機の準備は、募集が出てからでは間に合いません。</p>
+      <a class="btn" href="{NOTE_SET_URL}" target="_blank" rel="noopener noreferrer">応募の準備をする<span class="btn-arrow" aria-hidden="true">→</span></a>
+    </li>"""
+
+
+def render_footer_cta() -> str:
+    """求人を見終わったあとの本命CTA。noteセットとLINE登録の2本立て。"""
+    return f"""
+<section class="cta">
+  <div class="cta-block">
+    <h2>応募の前に、準備を。</h2>
+    <p>現役のJリーグクラブスタッフが、<strong>応募する側と採用する側の両方</strong>を見てきた視点で書いた6本セットです。
+    書類選考の突破法、面接で聞かれる30の質問、志望動機の作り方、求人の探し方まで。</p>
+    <p class="price"><span class="price-was">単品合計 4,070円</span> <span class="price-arrow">→</span> <strong>2,980円</strong></p>
+    <a class="btn" href="{NOTE_SET_URL}" target="_blank" rel="noopener noreferrer">Jリーグ転職 完全攻略セットを見る<span class="btn-arrow" aria-hidden="true">→</span></a>
+  </div>
+  <div class="cta-block">
+    <h2>新着求人をLINEで受け取る</h2>
+    <p>このページは毎週更新しています。更新のお知らせに加えて、
+    登録された方には<strong>転職活動に役立つ動画10本</strong>を無料でお送りしています。</p>
+    <a class="btn btn-line" href="{LINE_ADD_URL}" target="_blank" rel="noopener noreferrer">LINEで受け取る<span class="btn-arrow" aria-hidden="true">→</span></a>
+  </div>
+</section>"""
+
+
 def render_html(entries: list[dict], updated_at: str) -> str:
     count = len(entries)
     if entries:
-        cards = "\n".join(render_card(e) for e in entries)
-        list_html = f'<ul class="cards">{cards}</ul>'
+        parts = []
+        for i, e in enumerate(entries):
+            parts.append(render_card(e))
+            if i + 1 == INLINE_CTA_AFTER and count > INLINE_CTA_AFTER + 1:
+                parts.append(render_inline_cta())
+        list_html = f'<ul class="cards">{"".join(parts)}</ul>'
     else:
         list_html = (
             '<div class="empty">'
@@ -359,6 +399,80 @@ def render_html(entries: list[dict], updated_at: str) -> str:
   .btn-arrow {{ transition: transform 0.15s ease; }}
   .btn:hover .btn-arrow {{ transform: translateX(3px); }}
 
+  /* ===== CTA ===== */
+  .btn-line {{
+    background: #06c755;
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(6, 199, 85, 0.28);
+  }}
+  .btn-line:hover {{ box-shadow: 0 10px 22px rgba(6, 199, 85, 0.36); }}
+  .cta-inline {{
+    position: relative;
+    background: var(--tag-bg);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+    border-radius: 18px;
+    padding: 20px 20px 20px 24px;
+    overflow: hidden;
+  }}
+  .cta-inline::before {{
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 5px;
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+  }}
+  .cta-inline-lead {{
+    margin: 0;
+    font-weight: 700;
+    font-size: 1rem;
+  }}
+  .cta-inline-body {{
+    margin: 8px 0 0;
+    font-size: 0.86rem;
+    color: var(--muted);
+  }}
+  .cta {{
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }}
+  .cta-block {{
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px 22px;
+    box-shadow: var(--shadow);
+  }}
+  .cta-block h2 {{
+    margin: 0 0 10px;
+    font-size: 1.12rem;
+    font-weight: 700;
+  }}
+  .cta-block p {{
+    margin: 0 0 12px;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }}
+  .cta-block strong {{ color: var(--text); }}
+  .price {{
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+  }}
+  .price-was {{
+    color: var(--muted);
+    text-decoration: line-through;
+    font-size: 0.85rem;
+  }}
+  .price-arrow {{ color: var(--muted); }}
+  .price strong {{
+    font-family: "Montserrat", sans-serif;
+    font-size: 1.5rem;
+    color: var(--accent);
+  }}
+
   /* ===== Empty ===== */
   .empty {{
     text-align: center;
@@ -384,6 +498,8 @@ def render_html(entries: list[dict], updated_at: str) -> str:
     color: var(--text);
   }}
   .footer-tagline {{ margin: 4px 0 0; }}
+  .footer-links {{ margin: 10px 0 0; }}
+  .footer-links a {{ color: var(--accent); }}
 
   @media (prefers-reduced-motion: reduce) {{
     * {{ transition: none !important; }}
@@ -404,10 +520,13 @@ def render_html(entries: list[dict], updated_at: str) -> str:
 </header>
 <main>
   {list_html}
+  {render_footer_cta()}
 </main>
 <footer>
   <p class="footer-brand">ジョブサカ</p>
   <p class="footer-tagline">Jリーグ・スポーツビジネス界への転職を目指すすべての人へ</p>
+  <p class="footer-links"><a href="{NOTE_SET_URL}" target="_blank" rel="noopener noreferrer">note</a>
+   ・<a href="{LINE_ADD_URL}" target="_blank" rel="noopener noreferrer">公式LINE</a></p>
 </footer>
 </body>
 </html>

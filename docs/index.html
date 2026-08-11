@@ -254,6 +254,80 @@
   .btn-arrow { transition: transform 0.15s ease; }
   .btn:hover .btn-arrow { transform: translateX(3px); }
 
+  /* ===== CTA ===== */
+  .btn-line {
+    background: #06c755;
+    color: #ffffff;
+    box-shadow: 0 6px 16px rgba(6, 199, 85, 0.28);
+  }
+  .btn-line:hover { box-shadow: 0 10px 22px rgba(6, 199, 85, 0.36); }
+  .cta-inline {
+    position: relative;
+    background: var(--tag-bg);
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+    border-radius: 18px;
+    padding: 20px 20px 20px 24px;
+    overflow: hidden;
+  }
+  .cta-inline::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 5px;
+    background: linear-gradient(180deg, var(--accent-2), var(--accent));
+  }
+  .cta-inline-lead {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  .cta-inline-body {
+    margin: 8px 0 0;
+    font-size: 0.86rem;
+    color: var(--muted);
+  }
+  .cta {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .cta-block {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 24px 22px;
+    box-shadow: var(--shadow);
+  }
+  .cta-block h2 {
+    margin: 0 0 10px;
+    font-size: 1.12rem;
+    font-weight: 700;
+  }
+  .cta-block p {
+    margin: 0 0 12px;
+    font-size: 0.88rem;
+    color: var(--muted);
+  }
+  .cta-block strong { color: var(--text); }
+  .price {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .price-was {
+    color: var(--muted);
+    text-decoration: line-through;
+    font-size: 0.85rem;
+  }
+  .price-arrow { color: var(--muted); }
+  .price strong {
+    font-family: "Montserrat", sans-serif;
+    font-size: 1.5rem;
+    color: var(--accent);
+  }
+
   /* ===== Empty ===== */
   .empty {
     text-align: center;
@@ -279,6 +353,8 @@
     color: var(--text);
   }
   .footer-tagline { margin: 4px 0 0; }
+  .footer-links { margin: 10px 0 0; }
+  .footer-links a { color: var(--accent); }
 
   @media (prefers-reduced-motion: reduce) {
     * { transition: none !important; }
@@ -293,7 +369,7 @@
     <p class="sub">Jリーグクラブのフロントスタッフ求人を、毎週自動でまとめてお届けします。</p>
     <div class="hero-meta">
       <span class="count"><strong>12</strong> 件掲載中</span>
-      <span class="updated">最終更新：2026年08月11日 07:46</span>
+      <span class="updated">最終更新：2026年08月11日 11:21</span>
     </div>
   </div>
 </header>
@@ -311,7 +387,6 @@
       <div class="tags"><span class="tag">契約社員（1年更新・正社員登用制度あり）</span><span class="tag">東京都稲城市</span><span class="tag">東京ヴェルディ株式会社</span></div>
       <a class="btn" href="https://spojoba.com/job_offer/7508" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>
     </li>
-
     <li class="card">
       <div class="card-head">
         <span class="badge" aria-hidden="true">京</span>
@@ -324,7 +399,6 @@
       <div class="tags"><span class="tag">正社員（試用期間3ヶ月）</span><span class="tag">京都府城陽市</span><span class="tag">株式会社京都パープルサンガ</span></div>
       <a class="btn" href="https://spojoba.com/job_offer/7591" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>
     </li>
-
     <li class="card">
       <div class="card-head">
         <span class="badge" aria-hidden="true">東</span>
@@ -337,7 +411,6 @@
       <div class="tags"><span class="tag">正社員/契約社員</span><span class="tag">東京都稲城市</span><span class="tag">東京ヴェルディ株式会社</span></div>
       <a class="btn" href="https://spojoba.com/job_offer/7507" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>
     </li>
-
     <li class="card">
       <div class="card-head">
         <span class="badge" aria-hidden="true">東</span>
@@ -350,7 +423,6 @@
       <div class="tags"><span class="tag">正社員/契約社員</span><span class="tag">東京都稲城市</span><span class="tag">東京ヴェルディ株式会社</span></div>
       <a class="btn" href="https://spojoba.com/job_offer/7505" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>
     </li>
-
     <li class="card">
       <div class="card-head">
         <span class="badge" aria-hidden="true">ヴ</span>
@@ -363,7 +435,12 @@
       <div class="tags"><span class="tag">正社員</span><span class="tag">三重県桑名市</span><span class="tag">株式会社ヴィアティン三重ファミリークラブ</span></div>
       <a class="btn" href="https://spojoba.com/job_offer/7039" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>
     </li>
-
+    <li class="cta-inline">
+      <p class="cta-inline-lead">気になる求人は見つかりましたか？</p>
+      <p class="cta-inline-body">Jクラブの募集は、突然出て突然締まります。
+      書類・面接・志望動機の準備は、募集が出てからでは間に合いません。</p>
+      <a class="btn" href="https://note.com/jobsoccer/m/m380a8dc93253" target="_blank" rel="noopener noreferrer">応募の準備をする<span class="btn-arrow" aria-hidden="true">→</span></a>
+    </li>
     <li class="card">
       <div class="card-head">
         <span class="badge" aria-hidden="true">柏</span>
@@ -376,7 +453,6 @@
       <div class="tags"><span class="tag">正社員</span><span class="tag">千葉県柏市</span><span class="tag">株式会社日立柏レイソル</span></div>
       <a class="btn" href="https://spojoba.com/job_offer/6794" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>
     </li>
-
     <li class="card">
       <div class="card-head">
         <span class="badge" aria-hidden="true">川</span>
@@ -389,7 +465,6 @@
       <div class="tags"><span class="tag">正社員（試用期間3ヶ月）</span><span class="tag">神奈川県川崎市高津区</span><span class="tag">株式会社川崎フロンターレ</span></div>
       <a class="btn" href="https://spojoba.com/job_offer/7336" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>
     </li>
-
     <li class="card">
       <div class="card-head">
         <span class="badge" aria-hidden="true">鹿</span>
@@ -402,7 +477,6 @@
       <div class="tags"><span class="tag">正社員（試用期間3ヶ月）</span><span class="tag">茨城県鹿嶋市</span><span class="tag">株式会社鹿島アントラーズ・エフ・シー</span></div>
       <a class="btn" href="https://spojoba.com/job_offer/7331" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>
     </li>
-
     <li class="card">
       <div class="card-head">
         <span class="badge" aria-hidden="true">東</span>
@@ -415,7 +489,6 @@
       <div class="tags"><span class="tag">契約社員（1年契約更新あり・正社員登用制度あり）</span><span class="tag">東京都稲城市</span><span class="tag">東京ヴェルディ株式会社</span></div>
       <a class="btn" href="https://spojoba.com/job_offer/7506" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>
     </li>
-
     <li class="card">
       <div class="card-head">
         <span class="badge" aria-hidden="true">京</span>
@@ -428,7 +501,6 @@
       <div class="tags"><span class="tag">正社員（試用期間3ヶ月）</span><span class="tag">京都府京都市下京区</span><span class="tag">株式会社京都パープルサンガ</span></div>
       <a class="btn" href="https://spojoba.com/job_offer/7005" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>
     </li>
-
     <li class="card">
       <div class="card-head">
         <span class="badge" aria-hidden="true">ア</span>
@@ -441,7 +513,6 @@
       <div class="tags"><span class="tag">契約社員（正社員登用を見据えた採用）</span><span class="tag">新潟県北蒲原郡聖籠町</span><span class="tag">株式会社アルビレックス新潟</span></div>
       <a class="btn" href="https://jp.indeed.com/viewjob?jk=03437311ead696e5" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>
     </li>
-
     <li class="card">
       <div class="card-head">
         <span class="badge" aria-hidden="true">名</span>
@@ -454,10 +525,28 @@
       <div class="tags"><span class="tag">正社員（試用期間あり）</span><span class="tag">愛知県豊田市（トヨタスポーツセンター内）</span><span class="tag">株式会社名古屋グランパスエイト</span></div>
       <a class="btn" href="https://nagoya-grampus.jp/news/clubteam/2026/0731post-2792.php" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>
     </li></ul>
+  
+<section class="cta">
+  <div class="cta-block">
+    <h2>応募の前に、準備を。</h2>
+    <p>現役のJリーグクラブスタッフが、<strong>応募する側と採用する側の両方</strong>を見てきた視点で書いた6本セットです。
+    書類選考の突破法、面接で聞かれる30の質問、志望動機の作り方、求人の探し方まで。</p>
+    <p class="price"><span class="price-was">単品合計 4,070円</span> <span class="price-arrow">→</span> <strong>2,980円</strong></p>
+    <a class="btn" href="https://note.com/jobsoccer/m/m380a8dc93253" target="_blank" rel="noopener noreferrer">Jリーグ転職 完全攻略セットを見る<span class="btn-arrow" aria-hidden="true">→</span></a>
+  </div>
+  <div class="cta-block">
+    <h2>新着求人をLINEで受け取る</h2>
+    <p>このページは毎週更新しています。更新のお知らせに加えて、
+    登録された方には<strong>転職活動に役立つ動画10本</strong>を無料でお送りしています。</p>
+    <a class="btn btn-line" href="https://line.me/R/ti/p/%40968vguvu" target="_blank" rel="noopener noreferrer">LINEで受け取る<span class="btn-arrow" aria-hidden="true">→</span></a>
+  </div>
+</section>
 </main>
 <footer>
   <p class="footer-brand">ジョブサカ</p>
   <p class="footer-tagline">Jリーグ・スポーツビジネス界への転職を目指すすべての人へ</p>
+  <p class="footer-links"><a href="https://note.com/jobsoccer/m/m380a8dc93253" target="_blank" rel="noopener noreferrer">note</a>
+   ・<a href="https://line.me/R/ti/p/%40968vguvu" target="_blank" rel="noopener noreferrer">公式LINE</a></p>
 </footer>
 </body>
 </html>
