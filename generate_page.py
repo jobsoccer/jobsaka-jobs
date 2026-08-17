@@ -1,4 +1,5 @@
 """jleague_jobs.md を読み込み、「今週のJリーグ求人」ページ（docs/index.html）を生成する。"""
+import hashlib
 import html
 import re
 from datetime import datetime, timedelta, timezone
@@ -10,9 +11,19 @@ MAX_ENTRIES = 20
 JST = timezone(timedelta(hours=9))
 
 NOTE_SET_URL = "https://note.com/jobsoccer/m/m380a8dc93253"
-LINE_ADD_URL = "https://line.me/R/ti/p/%40968vguvu"
+LINE_ADD_URL = "https://jobsoccer.github.io/jobsaka-jobs/line/"
 # 求人カードを何件表示したあとに、リスト内CTAを差し込むか
 INLINE_CTA_AFTER = 5
+
+
+def job_slug(club: str, role: str) -> str:
+    """求人カードのアンカーID。X投稿から該当求人に直接着地させるために使う。
+
+    jobsaka-x-poster の refill_posts.py が同じ規則でURLを組み立てるため、
+    変更する場合は両方を必ず揃えること。
+    """
+    key = "｜".join(part for part in (club.strip(), role.strip()) if part)
+    return "job-" + hashlib.sha1(key.encode("utf-8")).hexdigest()[:8]
 
 
 def parse_entries(text: str) -> list[dict]:
@@ -42,6 +53,7 @@ def parse_entries(text: str) -> list[dict]:
         entries.append({
             "club": title_match.group(1).strip(),
             "role": title_match.group(2).strip(),
+            "slug": job_slug(title_match.group(1), title_match.group(2)),
             "date": date_match.group(1).strip() if date_match else "",
             "company": company_match.group(1).strip() if company_match else "",
             "employment": employment_match.group(1).strip() if employment_match else "",
@@ -78,7 +90,7 @@ def render_card(entry: dict) -> str:
         link_html = f'<a class="btn" href="{safe_url}" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>'
 
     return f"""
-    <li class="card">
+    <li class="card" id="{html.escape(entry["slug"], quote=True)}">
       <div class="card-head">
         <span class="badge" aria-hidden="true">{initial}</span>
         <div class="card-head-text">
@@ -304,6 +316,7 @@ def render_html(entries: list[dict], updated_at: str) -> str:
   /* ===== Card ===== */
   .card {{
     position: relative;
+    scroll-margin-top: 18px;
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 18px;
