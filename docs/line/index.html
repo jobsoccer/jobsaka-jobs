@@ -16,6 +16,8 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="新着のJリーグ求人を、LINEでまとめて受け取る｜ジョブサカ">
 <meta name="twitter:card" content="summary_large_image">
+<!-- GA4: 測定IDが決まったら、ここに gtag.js のタグを入れる。
+     generate_page.py の GA_MEASUREMENT_ID と必ず同じIDにすること。 -->
 <style>
   :root {
     color-scheme: light dark;
@@ -279,7 +281,7 @@
 
 <main>
   <div class="card cta-main">
-    <a class="btn-line" href="https://line.me/R/ti/p/%40968vguvu">
+    <a class="btn-line" href="https://line.me/R/ti/p/%40968vguvu" data-track="line_add_click" data-track-cta-position="main">
       <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 5.6 2 10.1c0 4 3.6 7.4 8.4 8 .3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c-.1.3-.2 1.1 1 .6s6.3-3.7 8.6-6.4c1.6-1.7 2.2-3.5 2.2-4.6C23 5.6 18.5 2 12 2z"/></svg>
       LINEで受け取る（無料）
     </a>
@@ -308,7 +310,7 @@
         <p>LINEの「友だち追加」→「検索」→「ID」で、こちらを入力してください。</p>
         <div class="id-line">
           <code class="lineid" id="lineid">@968vguvu</code>
-          <button class="copy-btn" type="button" id="copybtn">コピー</button>
+          <button class="copy-btn" type="button" id="copybtn" data-track="line_id_copy">コピー</button>
         </div>
       </div>
     </div>
@@ -317,16 +319,35 @@
   <section class="card">
     <h2>今すぐ求人を見たい方へ</h2>
     <p>登録しなくても、今週の掲載中求人は一覧ページで確認できます。毎週月曜に自動更新しています。</p>
-    <a class="btn-ghost" href="../">今週のJリーグ求人を見る →</a>
+    <a class="btn-ghost" href="../" data-track="jobs_link_click" data-track-cta-position="body">今週のJリーグ求人を見る →</a>
   </section>
 </main>
 
 <footer>
   <p class="footer-brand">ジョブサカ</p>
   <p class="footer-tagline">Jリーグ・スポーツビジネス界への転職を目指すすべての人へ</p>
-  <p class="footer-links"><a href="https://note.com/jobsoccer" target="_blank" rel="noopener noreferrer">note</a>
-   ・<a href="../">求人一覧</a></p>
+  <p class="footer-links"><a href="https://note.com/jobsoccer" target="_blank" rel="noopener noreferrer" data-track="note_cta_click" data-track-cta-position="footer-link">note</a>
+   ・<a href="../" data-track="jobs_link_click" data-track-cta-position="footer-link">求人一覧</a></p>
 </footer>
+
+<script>
+(function () {
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+    if (!t || typeof t.closest !== 'function') return;
+    var el = t.closest('[data-track]');
+    if (!el || typeof window.gtag !== 'function') return;
+    var params = {};
+    for (var i = 0; i < el.attributes.length; i++) {
+      var a = el.attributes[i];
+      if (a.name.indexOf('data-track-') === 0) {
+        params[a.name.slice(11).replace(/-/g, '_')] = a.value;
+      }
+    }
+    window.gtag('event', el.getAttribute('data-track'), params);
+  }, true);
+})();
+</script>
 
 <script>
   document.getElementById('copybtn').addEventListener('click', function () {

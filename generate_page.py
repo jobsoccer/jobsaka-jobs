@@ -10,10 +10,60 @@ OUTPUT = Path("docs/index.html")
 MAX_ENTRIES = 20
 JST = timezone(timedelta(hours=9))
 
+# GA4測定ID（G-XXXXXXXXXX）。空のままなら計測タグを一切出力しない。
+# docs/line/index.html にも同じIDを入れること
+GA_MEASUREMENT_ID = ""
 NOTE_SET_URL = "https://note.com/jobsoccer/m/m380a8dc93253"
 LINE_ADD_URL = "https://jobsoccer.github.io/jobsaka-jobs/line/"
 # 求人カードを何件表示したあとに、リスト内CTAを差し込むか
 INLINE_CTA_AFTER = 5
+
+
+def render_analytics_head() -> str:
+    """GA4の基本タグ。測定IDが未設定なら何も出力しない。"""
+    if not GA_MEASUREMENT_ID:
+        return ""
+    gid = GA_MEASUREMENT_ID
+    return (
+        f'<script async src="https://www.googletagmanager.com/gtag/js?id={gid}"></script>\n'
+        "<script>\n"
+        "window.dataLayer = window.dataLayer || [];\n"
+        "function gtag(){dataLayer.push(arguments);}\n"
+        "gtag('js', new Date());\n"
+        f"gtag('config', '{gid}');\n"
+        "</script>"
+    )
+
+
+def render_tracking_script() -> str:
+    """data-track が付いた要素のクリックをGA4イベントとして送る。
+
+    data-track         … イベント名
+    data-track-<名前>  … イベントパラメータ（ハイフンはアンダースコアに変換）
+    """
+    if not GA_MEASUREMENT_ID:
+        return ""
+    return TRACKING_JS
+
+
+TRACKING_JS = """<script>
+(function () {
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+    if (!t || typeof t.closest !== 'function') return;
+    var el = t.closest('[data-track]');
+    if (!el || typeof window.gtag !== 'function') return;
+    var params = {};
+    for (var i = 0; i < el.attributes.length; i++) {
+      var a = el.attributes[i];
+      if (a.name.indexOf('data-track-') === 0) {
+        params[a.name.slice(11).replace(/-/g, '_')] = a.value;
+      }
+    }
+    window.gtag('event', el.getAttribute('data-track'), params);
+  }, true);
+})();
+</script>"""
 
 
 def job_slug(club: str, role: str) -> str:
@@ -87,7 +137,8 @@ def render_card(entry: dict) -> str:
     link_html = ""
     if entry["url"]:
         safe_url = html.escape(entry["url"], quote=True)
-        link_html = f'<a class="btn" href="{safe_url}" target="_blank" rel="noopener noreferrer">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>'
+        job_name = html.escape(entry["club"] + "｜" + entry["role"], quote=True)
+        link_html = f'<a class="btn" href="{safe_url}" target="_blank" rel="noopener noreferrer" data-track="job_apply_click" data-track-job-name="{job_name}">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>'
 
     return f"""
     <li class="card" id="{html.escape(entry["slug"], quote=True)}">
@@ -111,7 +162,7 @@ def render_inline_cta() -> str:
       <p class="cta-inline-lead">気になる求人は見つかりましたか？</p>
       <p class="cta-inline-body">Jクラブの募集は、突然出て突然締まります。
       書類・面接・志望動機の準備は、募集が出てからでは間に合いません。</p>
-      <a class="btn" href="{NOTE_SET_URL}" target="_blank" rel="noopener noreferrer">応募の準備をする<span class="btn-arrow" aria-hidden="true">→</span></a>
+      <a class="btn" href="{NOTE_SET_URL}" target="_blank" rel="noopener noreferrer" data-track="note_cta_click" data-track-cta-position="inline">応募の準備をする<span class="btn-arrow" aria-hidden="true">→</span></a>
     </li>"""
 
 
@@ -124,13 +175,13 @@ def render_footer_cta() -> str:
     <p>現役のJリーグクラブスタッフが、<strong>応募する側と採用する側の両方</strong>を見てきた視点で書いた6本セットです。
     書類選考の突破法、面接で聞かれる30の質問、志望動機の作り方、求人の探し方まで。</p>
     <p class="price"><span class="price-was">単品合計 4,070円</span> <span class="price-arrow">→</span> <strong>2,980円</strong></p>
-    <a class="btn" href="{NOTE_SET_URL}" target="_blank" rel="noopener noreferrer">Jリーグ転職 完全攻略セットを見る<span class="btn-arrow" aria-hidden="true">→</span></a>
+    <a class="btn" href="{NOTE_SET_URL}" target="_blank" rel="noopener noreferrer" data-track="note_cta_click" data-track-cta-position="footer-cta">Jリーグ転職 完全攻略セットを見る<span class="btn-arrow" aria-hidden="true">→</span></a>
   </div>
   <div class="cta-block">
     <h2>新着求人をLINEで受け取る</h2>
     <p>このページは毎週更新しています。更新のお知らせに加えて、
     登録された方には<strong>転職活動に役立つ動画10本</strong>を無料でお送りしています。</p>
-    <a class="btn btn-line" href="{LINE_ADD_URL}" target="_blank" rel="noopener noreferrer">LINEで受け取る<span class="btn-arrow" aria-hidden="true">→</span></a>
+    <a class="btn btn-line" href="{LINE_ADD_URL}" target="_blank" rel="noopener noreferrer" data-track="line_cta_click" data-track-cta-position="footer-cta">LINEで受け取る<span class="btn-arrow" aria-hidden="true">→</span></a>
   </div>
 </section>"""
 
@@ -155,6 +206,13 @@ def render_html(entries: list[dict], updated_at: str) -> str:
         f'<span class="count"><strong>{count}</strong> 件掲載中</span>' if entries else ""
     )
 
+    analytics_head = render_analytics_head()
+    tracking_script = render_tracking_script()
+    analytics_note = (
+        '<p class="footer-note">このサイトはアクセス解析にGoogleアナリティクスを利用しています。</p>'
+        if GA_MEASUREMENT_ID else ""
+    )
+
     return f"""<!doctype html>
 <html lang="ja">
 <head>
@@ -165,6 +223,7 @@ def render_html(entries: list[dict], updated_at: str) -> str:
 <meta property="og:title" content="今週のJリーグ求人｜ジョブサカ">
 <meta property="og:description" content="Jリーグクラブのフロントスタッフ求人を毎週自動更新でまとめています。">
 <meta property="og:type" content="website">
+{analytics_head}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -511,6 +570,12 @@ def render_html(entries: list[dict], updated_at: str) -> str:
     color: var(--text);
   }}
   .footer-tagline {{ margin: 4px 0 0; }}
+  .footer-note {{
+    margin: 14px 0 0;
+    font-size: 0.72rem;
+    color: var(--muted);
+    opacity: 0.85;
+  }}
   .footer-links {{ margin: 10px 0 0; }}
   .footer-links a {{ color: var(--accent); }}
 
@@ -538,9 +603,11 @@ def render_html(entries: list[dict], updated_at: str) -> str:
 <footer>
   <p class="footer-brand">ジョブサカ</p>
   <p class="footer-tagline">Jリーグ・スポーツビジネス界への転職を目指すすべての人へ</p>
-  <p class="footer-links"><a href="{NOTE_SET_URL}" target="_blank" rel="noopener noreferrer">note</a>
-   ・<a href="{LINE_ADD_URL}" target="_blank" rel="noopener noreferrer">公式LINE</a></p>
+  <p class="footer-links"><a href="{NOTE_SET_URL}" target="_blank" rel="noopener noreferrer" data-track="note_cta_click" data-track-cta-position="footer-link">note</a>
+   ・<a href="{LINE_ADD_URL}" target="_blank" rel="noopener noreferrer" data-track="line_cta_click" data-track-cta-position="footer-link">公式LINE</a></p>
+  {analytics_note}
 </footer>
+{tracking_script}
 </body>
 </html>
 """
