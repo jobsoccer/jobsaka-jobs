@@ -16,8 +16,14 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="新着のJリーグ求人を、LINEでまとめて受け取る｜ジョブサカ">
 <meta name="twitter:card" content="summary_large_image">
-<!-- GA4: 測定IDが決まったら、ここに gtag.js のタグを入れる。
-     generate_page.py の GA_MEASUREMENT_ID と必ず同じIDにすること。 -->
+<!-- GA4（測定ID: G-355S4P1X4K）。generate_page.py の GA_MEASUREMENT_ID と同じIDにすること -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-355S4P1X4K"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-355S4P1X4K');
+</script>
 <style>
   :root {
     color-scheme: light dark;
@@ -268,6 +274,12 @@
   .footer-links { margin: 0; font-size: 0.82rem; }
   .footer-links a { color: var(--accent); text-decoration: none; }
   .footer-links a:hover { text-decoration: underline; }
+  .footer-note {
+    margin: 14px 0 0;
+    font-size: 0.72rem;
+    color: var(--muted);
+    opacity: 0.85;
+  }
 </style>
 </head>
 <body>
@@ -328,6 +340,7 @@
   <p class="footer-tagline">Jリーグ・スポーツビジネス界への転職を目指すすべての人へ</p>
   <p class="footer-links"><a href="https://note.com/jobsoccer" target="_blank" rel="noopener noreferrer" data-track="note_cta_click" data-track-cta-position="footer-link">note</a>
    ・<a href="../" data-track="jobs_link_click" data-track-cta-position="footer-link">求人一覧</a></p>
+  <p class="footer-note">このサイトはアクセス解析にGoogleアナリティクスを利用しています。</p>
 </footer>
 
 <script>

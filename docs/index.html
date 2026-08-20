@@ -8,7 +8,13 @@
 <meta property="og:title" content="今週のJリーグ求人｜ジョブサカ">
 <meta property="og:description" content="Jリーグクラブのフロントスタッフ求人を毎週自動更新でまとめています。">
 <meta property="og:type" content="website">
-
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-355S4P1X4K"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-355S4P1X4K');
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -377,7 +383,7 @@
     <p class="sub">Jリーグクラブのフロントスタッフ求人を、毎週自動でまとめてお届けします。</p>
     <div class="hero-meta">
       <span class="count"><strong>17</strong> 件掲載中</span>
-      <span class="updated">最終更新：2026年08月19日 08:01</span>
+      <span class="updated">最終更新：2026年08月21日 07:33</span>
     </div>
   </div>
 </header>
@@ -615,8 +621,25 @@
   <p class="footer-tagline">Jリーグ・スポーツビジネス界への転職を目指すすべての人へ</p>
   <p class="footer-links"><a href="https://note.com/jobsoccer/m/m380a8dc93253" target="_blank" rel="noopener noreferrer" data-track="note_cta_click" data-track-cta-position="footer-link">note</a>
    ・<a href="https://jobsoccer.github.io/jobsaka-jobs/line/" target="_blank" rel="noopener noreferrer" data-track="line_cta_click" data-track-cta-position="footer-link">公式LINE</a></p>
-  
+  <p class="footer-note">このサイトはアクセス解析にGoogleアナリティクスを利用しています。</p>
 </footer>
-
+<script>
+(function () {
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+    if (!t || typeof t.closest !== 'function') return;
+    var el = t.closest('[data-track]');
+    if (!el || typeof window.gtag !== 'function') return;
+    var params = {};
+    for (var i = 0; i < el.attributes.length; i++) {
+      var a = el.attributes[i];
+      if (a.name.indexOf('data-track-') === 0) {
+        params[a.name.slice(11).replace(/-/g, '_')] = a.value;
+      }
+    }
+    window.gtag('event', el.getAttribute('data-track'), params);
+  }, true);
+})();
+</script>
 </body>
 </html>

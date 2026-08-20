@@ -12,7 +12,7 @@ JST = timezone(timedelta(hours=9))
 
 # GA4測定ID（G-XXXXXXXXXX）。空のままなら計測タグを一切出力しない。
 # docs/line/index.html にも同じIDを入れること
-GA_MEASUREMENT_ID = ""
+GA_MEASUREMENT_ID = "G-355S4P1X4K"
 NOTE_SET_URL = "https://note.com/jobsoccer/m/m380a8dc93253"
 LINE_ADD_URL = "https://jobsoccer.github.io/jobsaka-jobs/line/"
 # 求人カードを何件表示したあとに、リスト内CTAを差し込むか
