@@ -16,7 +16,7 @@ GA_MEASUREMENT_ID = "G-355S4P1X4K"
 NOTE_SET_URL = "https://note.com/jobsoccer/m/m380a8dc93253"
 LINE_ADD_URL = "https://jobsoccer.github.io/jobsaka-jobs/line/"
 # 求人カードを何件表示したあとに、リスト内CTAを差し込むか
-INLINE_CTA_AFTER = 5
+INLINE_CTA_AFTER = 3
 
 
 def render_analytics_head() -> str:
@@ -140,6 +140,13 @@ def render_card(entry: dict) -> str:
         job_name = html.escape(entry["club"] + "｜" + entry["role"], quote=True)
         link_html = f'<a class="btn" href="{safe_url}" target="_blank" rel="noopener noreferrer" data-track="job_apply_click" data-track-job-name="{job_name}">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>'
 
+    line_nudge_html = (
+        f'<a class="card-line-link" href="{LINE_ADD_URL}" target="_blank" rel="noopener noreferrer"'
+        ' data-track="line_cta_click" data-track-cta-position="card">'
+        '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 5.6 2 10.1c0 4 3.6 7.4 8.4 8 .3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c-.1.3-.2 1.1 1 .6s6.3-3.7 8.6-6.4c1.6-1.7 2.2-3.5 2.2-4.6C23 5.6 18.5 2 12 2z"/></svg>'
+        '新着求人をLINEで受け取る</a>'
+    )
+
     return f"""
     <li class="card" id="{html.escape(entry["slug"], quote=True)}">
       <div class="card-head">
@@ -151,7 +158,10 @@ def render_card(entry: dict) -> str:
       </div>
       <h2 class="role">{role}</h2>
       <div class="tags">{tags_html}</div>
-      {link_html}
+      <div class="card-actions">
+        {link_html}
+        {line_nudge_html}
+      </div>
     </li>"""
 
 
@@ -470,6 +480,24 @@ def render_html(entries: list[dict], updated_at: str) -> str:
   }}
   .btn-arrow {{ transition: transform 0.15s ease; }}
   .btn:hover .btn-arrow {{ transform: translateX(3px); }}
+  .card-actions {{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px 16px;
+  }}
+  .card-line-link {{
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 16px;
+    color: #06c755;
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-decoration: none;
+  }}
+  .card-line-link:hover {{ text-decoration: underline; }}
+  .card-line-link svg {{ flex: none; }}
 
   /* ===== CTA ===== */
   .btn-line {{
