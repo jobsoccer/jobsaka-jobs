@@ -7,7 +7,7 @@ from pathlib import Path
 
 SOURCE = Path("jleague_jobs.md")
 OUTPUT = Path("docs/index.html")
-MAX_ENTRIES = 25
+MAX_ENTRIES = 40
 JST = timezone(timedelta(hours=9))
 
 # GA4測定ID（G-XXXXXXXXXX）。空のままなら計測タグを一切出力しない。
