@@ -15,8 +15,9 @@ JST = timezone(timedelta(hours=9))
 GA_MEASUREMENT_ID = "G-355S4P1X4K"
 NOTE_SET_URL = "https://note.com/jobsoccer/m/m380a8dc93253"
 LINE_ADD_URL = "https://jobsoccer.github.io/jobsaka-jobs/line/"
-# 求人カードを何件表示したあとに、リスト内CTAを差し込むか
-INLINE_CTA_AFTER = 3
+# 求人カードを何件表示したあとに、リスト内CTAを差し込むか（複数指定可）。
+# 深くスクロールする人にも届くよう、序盤と中盤の2箇所に置く。
+INLINE_CTA_POSITIONS = {3: "inline-1", 15: "inline-2"}
 
 
 def render_analytics_head() -> str:
@@ -165,14 +166,21 @@ def render_card(entry: dict) -> str:
     </li>"""
 
 
-def render_inline_cta() -> str:
-    """求人カードの途中に差し込むCTA（最後まで読まない人にも届かせる）。"""
+def render_inline_cta(position: str) -> str:
+    """求人カードの途中に差し込むCTA。
+
+    フッターの大きい専用セクション（cta-block）だけがGA4実測でクリックされており、
+    小さく控えめな見た目のCTAは0クリックだった（2026-08-11〜09-15・140表示）。
+    見た目を弱めず、フッターと同じ「価格を見せる大きいボタン」に統一する。
+    """
     return f"""
     <li class="cta-inline">
-      <p class="cta-inline-lead">気になる求人は見つかりましたか？</p>
-      <p class="cta-inline-body">Jクラブの募集は、突然出て突然締まります。
-      書類・面接・志望動機の準備は、募集が出てからでは間に合いません。</p>
-      <a class="btn" href="{NOTE_SET_URL}" target="_blank" rel="noopener noreferrer" data-track="note_cta_click" data-track-cta-position="inline">応募の準備をする<span class="btn-arrow" aria-hidden="true">→</span></a>
+      <div class="cta-block">
+        <h2>応募の前に、準備を。</h2>
+        <p>現役のJリーグクラブスタッフが、<strong>応募する側と採用する側の両方</strong>を見てきた視点で書いた6本セットです。</p>
+        <p class="price"><span class="price-was">単品合計 4,070円</span> <span class="price-arrow">→</span> <strong>2,980円</strong></p>
+        <a class="btn" href="{NOTE_SET_URL}" target="_blank" rel="noopener noreferrer" data-track="note_cta_click" data-track-cta-position="{position}">Jリーグ転職 完全攻略セットを見る<span class="btn-arrow" aria-hidden="true">→</span></a>
+      </div>
     </li>"""
 
 
@@ -202,8 +210,9 @@ def render_html(entries: list[dict], updated_at: str) -> str:
         parts = []
         for i, e in enumerate(entries):
             parts.append(render_card(e))
-            if i + 1 == INLINE_CTA_AFTER and count > INLINE_CTA_AFTER + 1:
-                parts.append(render_inline_cta())
+            position = INLINE_CTA_POSITIONS.get(i + 1)
+            if position and count > i + 2:
+                parts.append(render_inline_cta(position))
         list_html = f'<ul class="cards">{"".join(parts)}</ul>'
     else:
         list_html = (
@@ -507,29 +516,10 @@ def render_html(entries: list[dict], updated_at: str) -> str:
   }}
   .btn-line:hover {{ box-shadow: 0 10px 22px rgba(6, 199, 85, 0.36); }}
   .cta-inline {{
-    position: relative;
-    background: var(--tag-bg);
-    border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
-    border-radius: 18px;
-    padding: 20px 20px 20px 24px;
-    overflow: hidden;
+    list-style: none;
   }}
-  .cta-inline::before {{
-    content: "";
-    position: absolute;
-    left: 0; top: 0; bottom: 0;
-    width: 5px;
-    background: linear-gradient(180deg, var(--accent-2), var(--accent));
-  }}
-  .cta-inline-lead {{
+  .cta-inline .cta-block {{
     margin: 0;
-    font-weight: 700;
-    font-size: 1rem;
-  }}
-  .cta-inline-body {{
-    margin: 8px 0 0;
-    font-size: 0.86rem;
-    color: var(--muted);
   }}
   .cta {{
     margin-top: 28px;
