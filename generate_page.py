@@ -1,4 +1,6 @@
 """jleague_jobs.md を読み込み、「今週のJリーグ求人」ページ（docs/index.html）を生成する。"""
+from __future__ import annotations
+
 import hashlib
 import html
 import re
@@ -8,6 +10,9 @@ from pathlib import Path
 SOURCE = Path("jleague_jobs.md")
 OUTPUT = Path("docs/index.html")
 MAX_ENTRIES = 40
+# 掲載終了の明示検知（jleague-jobsスキルの生存確認）をすり抜けた「放置」求人の保険。
+# 取得日時からこの日数を超えたら、URLの生死に関わらず一覧から落とす。
+MAX_AGE_DAYS = 45
 JST = timezone(timedelta(hours=9))
 
 # GA4測定ID（G-XXXXXXXXXX）。空のままなら計測タグを一切出力しない。
@@ -114,11 +119,31 @@ def parse_entries(text: str) -> list[dict]:
     return entries
 
 
-def sort_key(entry: dict) -> datetime:
+def parse_date(entry: dict) -> datetime | None:
+    """「2026/08/10（記録漏れのため本日追記）」のような注記付きでも日付部分を拾う。"""
+    match = re.search(r"(\d{4})/(\d{1,2})/(\d{1,2})", entry["date"])
+    if not match:
+        return None
     try:
-        return datetime.strptime(entry["date"], "%Y/%m/%d")
+        return datetime(*(int(g) for g in match.groups()))
     except ValueError:
-        return datetime.min
+        return None
+
+
+def sort_key(entry: dict) -> datetime:
+    return parse_date(entry) or datetime.min
+
+
+def is_expired(entry: dict, now: datetime) -> bool:
+    """取得日時からMAX_AGE_DAYSを超えたら、URLの生死に関わらず掲載終了とみなす。
+
+    jleague-jobsスキルの生存確認（クローズ明示検知）をすり抜けた
+    「ページは残るが実質期限切れ」求人を落とすための保険。
+    """
+    date = parse_date(entry)
+    if date is None:
+        return False
+    return (now - date).days > MAX_AGE_DAYS
 
 
 def render_card(entry: dict) -> str:
@@ -634,6 +659,12 @@ def render_html(entries: list[dict], updated_at: str) -> str:
 def main() -> None:
     text = SOURCE.read_text(encoding="utf-8") if SOURCE.exists() else ""
     entries = parse_entries(text)
+
+    now = datetime.now(JST).replace(tzinfo=None)
+    before = len(entries)
+    entries = [e for e in entries if not is_expired(e, now)]
+    expired_count = before - len(entries)
+
     entries.sort(key=sort_key, reverse=True)
     entries = entries[:MAX_ENTRIES]
 
@@ -641,6 +672,8 @@ def main() -> None:
     OUTPUT.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT.write_text(render_html(entries, updated_at), encoding="utf-8")
     print(f"{len(entries)}件の求人でページを更新しました（{OUTPUT}）")
+    if expired_count:
+        print(f"取得から{MAX_AGE_DAYS}日超のため{expired_count}件を掲載終了扱いで除外しました")
 
 
 if __name__ == "__main__":
