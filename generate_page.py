@@ -68,6 +68,20 @@ TRACKING_JS = """<script>
     }
     window.gtag('event', el.getAttribute('data-track'), params);
   }, true);
+
+  // フッターCTA（求人を見終わったあとの本命セクション）に到達したかを1回だけ計測する。
+  var ctaSection = document.getElementById('footer-cta-section');
+  if (ctaSection && typeof window.IntersectionObserver === 'function') {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting && typeof window.gtag === 'function') {
+          window.gtag('event', 'footer_cta_view');
+          observer.disconnect();
+        }
+      });
+    }, { threshold: 0.5 });
+    observer.observe(ctaSection);
+  }
 })();
 </script>"""
 
@@ -212,7 +226,7 @@ def render_inline_cta(position: str) -> str:
 def render_footer_cta() -> str:
     """求人を見終わったあとの本命CTA。noteセットとLINE登録の2本立て。"""
     return f"""
-<section class="cta">
+<section class="cta" id="footer-cta-section">
   <div class="cta-block">
     <h2>応募の前に、準備を。</h2>
     <p>現役のJリーグクラブスタッフが、<strong>応募する側と採用する側の両方</strong>を見てきた視点で書いた6本セットです。
@@ -221,9 +235,10 @@ def render_footer_cta() -> str:
     <a class="btn" href="{NOTE_SET_URL}" target="_blank" rel="noopener noreferrer" data-track="note_cta_click" data-track-cta-position="footer-cta">Jリーグ転職 完全攻略セットを見る<span class="btn-arrow" aria-hidden="true">→</span></a>
   </div>
   <div class="cta-block">
-    <h2>新着求人をLINEで受け取る</h2>
-    <p>このページは毎週更新しています。更新のお知らせに加えて、
-    登録された方には<strong>転職活動に役立つ動画10本</strong>を無料でお送りしています。</p>
+    <h2>求人情報を、LINEでも</h2>
+    <p>求人一覧ページはリッチメニューからいつでも開けます。
+    月1回、その時点の新着求人をまとめてお届けするほか、
+    登録特典として<strong>転職活動に役立つ動画10本</strong>を無料でお送りしています。</p>
     <a class="btn btn-line" href="{LINE_ADD_URL}" target="_blank" rel="noopener noreferrer" data-track="line_cta_click" data-track-cta-position="footer-cta">LINEで受け取る<span class="btn-arrow" aria-hidden="true">→</span></a>
   </div>
 </section>"""
