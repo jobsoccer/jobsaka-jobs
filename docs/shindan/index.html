@@ -251,13 +251,11 @@ gtag('config', 'G-355S4P1X4K');
     padding: 4px 10px;
     justify-self: start;
   }
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   footer { font-size: 12px; color: var(--muted); }
 
   @media (max-width: 420px) {
     .roles { grid-template-columns: 1fr; }
     .bar { grid-template-columns: 7.5em 1fr 3em; }
-    .row2 { grid-template-columns: 1fr; }
   }
   @media (prefers-reduced-motion: reduce) {
     .pitchbar .ball { transition: none; }
@@ -321,10 +319,7 @@ gtag('config', 'G-355S4P1X4K');
     </div>
     <div class="cta">
       <a class="btn" href="../" data-track="jobs_link_click" data-track-cta-position="shindan-result">いま出ている求人を見る</a>
-      <div class="row2">
-        <a class="btn ghost" id="share" href="#" target="_blank" rel="noopener" data-track="shindan_share_click">結果をXでシェア</a>
-        <button class="btn ghost" id="again">もう一度診断する</button>
-      </div>
+      <button class="btn ghost" id="again">もう一度診断する</button>
       <a class="btn ghost" href="https://note.com/jobsoccer/n/nb725ec203e18" target="_blank" rel="noopener" data-track="note_cta_click" data-track-cta-position="shindan-result">書類選考を通すための書き方（note）</a>
       <p class="note">LINEのメニューから、いつでも最新の求人一覧を開けます。求人一覧は毎週自動で更新しています。</p>
       <a class="btn ghost" href="../line/" data-track="line_cta_click" data-track-cta-position="shindan-result">まだ友だちでない方はこちら</a>
@@ -490,8 +485,6 @@ gtag('config', 'G-355S4P1X4K');
       row.firstChild.textContent = TYPES[r.k].name.replace('（経理・人事・総務）', '');
       bars.appendChild(row);
     });
-    const text = `Jクラブの仕事診断、わたしは「${top.name}」タイプでした（適性${ranked[0].pct}%）。\n#ジョブサカ #Jリーグで働く`;
-    $('share').href = 'https://x.com/intent/post?text=' + encodeURIComponent(text);
     show('result');
     if (!isSample) window.scrollTo({ top: 0, behavior: 'smooth' });
   }
