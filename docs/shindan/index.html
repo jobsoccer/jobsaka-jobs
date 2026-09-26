@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>クラブ職種診断｜ジョブサカ</title>
+<meta name="description" content="10問に答えると、Jリーグクラブのフロント6職種のうちどれが向いているかがわかります。">
+<!-- LINE友だち限定の特典なので検索には出さない -->
+<meta name="robots" content="noindex">
+<!-- GA4（測定ID: G-355S4P1X4K）。generate_page.py の GA_MEASUREMENT_ID と同じIDにすること -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-355S4P1X4K"></script>
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-355S4P1X4K');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+  :root {
+    --bg: #eef2ee;
+    --surface: #ffffff;
+    --ink: #13201a;
+    --muted: #5b6a61;
+    --line: #d3ddd5;
+    --turf: #1d7a45;
+    --turf-soft: #dcefe2;
+    --turf-ink: #ffffff;
+    --card: #f2c230;
+    --card-ink: #1d1a0c;
+    --display: "Dela Gothic One", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --sans: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --bg: #0e1511;
+      --surface: #16201a;
+      --ink: #e7eee9;
+      --muted: #97a79d;
+      --line: #2a3a30;
+      --turf: #3fae6c;
+      --turf-soft: #1b3325;
+      --turf-ink: #07130c;
+      --card: #f2c230;
+      --card-ink: #1d1a0c;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: #0e1511;
+    --surface: #16201a;
+    --ink: #e7eee9;
+    --muted: #97a79d;
+    --line: #2a3a30;
+    --turf: #3fae6c;
+    --turf-soft: #1b3325;
+    --turf-ink: #07130c;
+    --card: #f2c230;
+    --card-ink: #1d1a0c;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.75;
+  }
+  .wrap {
+    max-width: 620px;
+    margin: 0 auto;
+    padding-inline: 16px;
+    padding-block: 28px 56px;
+    display: grid;
+    gap: 20px;
+  }
+  .brand {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  h1, h2 {
+    font-family: var(--display);
+    font-weight: 400;
+    line-height: 1.3;
+    text-wrap: balance;
+    margin: 0;
+  }
+  h1 { font-size: clamp(28px, 7vw, 40px); }
+  h2 { font-size: clamp(22px, 5.4vw, 28px); }
+  p { margin: 0; }
+  .lead { color: var(--muted); max-width: 34em; }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 22px 20px;
+    display: grid;
+    gap: 16px;
+  }
+
+  /* スタート画面の6職種 */
+  .roles {
+    list-style: none; margin: 0; padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .roles li {
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    display: grid;
+    gap: 2px;
+  }
+  .roles b { font-size: 14px; }
+  .roles span { color: var(--muted); }
+
+  .btn {
+    font: 700 16px var(--sans);
+    border-radius: 8px;
+    padding: 14px 18px;
+    border: 0;
+    cursor: pointer;
+    background: var(--turf);
+    color: var(--turf-ink);
+    text-align: center;
+    text-decoration: none;
+    display: block;
+  }
+  .btn:hover { filter: brightness(1.06); }
+  .btn.ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    font-weight: 500;
+    font-size: 14px;
+    padding: 11px 14px;
+  }
+  .meta { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  :focus-visible { outline: 3px solid var(--card); outline-offset: 2px; }
+
+  /* 進捗：ピッチの帯をボールが進む */
+  .pitchbar {
+    position: relative;
+    height: 26px;
+    border-radius: 4px;
+    background:
+      repeating-linear-gradient(90deg, var(--turf-soft) 0 10%, transparent 10% 20%),
+      var(--surface);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .pitchbar::before { /* ハーフウェイライン */
+    content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px;
+    background: var(--line);
+  }
+  .pitchbar .goal {
+    position: absolute; right: 0; top: 5px; bottom: 5px; width: 6px;
+    border: 2px solid var(--muted); border-right: 0;
+  }
+  .pitchbar .ball {
+    position: absolute; top: 50%; width: 14px; height: 14px; margin-top: -7px;
+    border-radius: 50%;
+    background: var(--ink);
+    box-shadow: inset -3px -3px 0 rgba(255,255,255,0.25);
+    transition: left 0.35s ease;
+  }
+  .qhead { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .qtext { font-size: 19px; font-weight: 700; line-height: 1.5; text-wrap: balance; }
+  .opts { display: grid; gap: 8px; }
+  .opt {
+    font: 500 15px var(--sans);
+    text-align: left;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 13px 14px;
+    cursor: pointer;
+    line-height: 1.5;
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+  }
+  .opt:hover { border-color: var(--turf); background: var(--turf-soft); }
+  .opt .key { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+  .back {
+    justify-self: start;
+    background: none; border: 0; color: var(--muted);
+    font: 14px var(--sans); cursor: pointer; padding: 4px 0;
+  }
+  .back:disabled { visibility: hidden; }
+
+  /* 結果 */
+  .verdict {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: center;
+  }
+  .yellow {
+    width: 58px; height: 80px;
+    border-radius: 5px;
+    background: var(--card);
+    color: var(--card-ink);
+    display: grid; place-items: center;
+    font-family: var(--mono);
+    font-size: 15px;
+    transform: rotate(-6deg);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+  }
+  .verdict .sub { color: var(--muted); font-size: 13px; }
+  .bars { display: grid; gap: 8px; }
+  .bar {
+    display: grid;
+    grid-template-columns: 9.5em 1fr 3.2em;
+    gap: 10px;
+    align-items: center;
+    font-size: 13px;
+  }
+  .bar .track { height: 8px; background: var(--turf-soft); border-radius: 4px; overflow: hidden; }
+  .bar .fill { height: 100%; background: var(--turf); border-radius: 4px; }
+  .bar.top .fill { background: var(--card); }
+  .bar .pct { font-family: var(--mono); font-variant-numeric: tabular-nums; text-align: right; color: var(--muted); }
+  .facts { display: grid; gap: 14px; }
+  .facts h3 {
+    margin: 0 0 4px;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--turf);
+    font-weight: 700;
+  }
+  .facts ul { margin: 0; padding-left: 1.2em; }
+  .cta { display: grid; gap: 10px; }
+  .cta .note { font-size: 12px; color: var(--muted); }
+  .sample {
+    font-size: 12px;
+    color: var(--card-ink);
+    background: var(--card);
+    border-radius: 4px;
+    padding: 4px 10px;
+    justify-self: start;
+  }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  footer { font-size: 12px; color: var(--muted); }
+
+  @media (max-width: 420px) {
+    .roles { grid-template-columns: 1fr; }
+    .bar { grid-template-columns: 7.5em 1fr 3em; }
+    .row2 { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pitchbar .ball { transition: none; }
+  }
+  html { background: var(--bg); }
+</style>
+</head>
+<body>
+
+<main class="wrap">
+  <div class="brand">JOBSAKA · Jリーグクラブで働く</div>
+
+  <!-- スタート -->
+  <section id="start" class="panel" aria-labelledby="t-start">
+    <h1 id="t-start">あなたに合う<br>クラブの仕事診断</h1>
+    <p class="lead">Jクラブのフロントには、選手以外にもたくさんの仕事があります。10問に答えると、6つの職種のうちどれが向いているかがわかります。</p>
+    <ul class="roles" aria-label="診断できる職種">
+      <li><b>パートナー営業</b><span>スポンサー企業を増やす</span></li>
+      <li><b>広報・デジタル</b><span>クラブの声を届ける</span></li>
+      <li><b>ホームタウン・普及</b><span>地域と子どもをつなぐ</span></li>
+      <li><b>チケット・マーケ</b><span>スタジアムを満員にする</span></li>
+      <li><b>試合運営</b><span>試合の日を無事に回す</span></li>
+      <li><b>管理部門</b><span>経理・人事でクラブを支える</span></li>
+    </ul>
+    <button class="btn" id="go">診断をはじめる</button>
+    <p class="meta">LINE友だち限定 · 10問 · 約2分</p>
+  </section>
+
+  <!-- 質問 -->
+  <section id="quiz" class="panel" hidden aria-live="polite">
+    <div class="qhead">
+      <span class="meta" id="qnum">Q1 / 10</span>
+      <span class="meta" id="qmin">前半</span>
+    </div>
+    <div class="pitchbar" aria-hidden="true"><div class="goal"></div><div class="ball" id="ball"></div></div>
+    <p class="qtext" id="qtext"></p>
+    <div class="opts" id="opts"></div>
+    <button class="back" id="back">← ひとつ戻る</button>
+  </section>
+
+  <!-- 結果 -->
+  <section id="result" class="panel" hidden aria-labelledby="rname">
+    <span class="sample" id="sampleTag" hidden>回答例による結果表示</span>
+    <div class="verdict">
+      <div class="yellow" id="rpct" aria-hidden="true">—</div>
+      <div>
+        <p class="sub">あなたに一番合うのは</p>
+        <h2 id="rname"></h2>
+        <p class="sub" id="rcatch"></p>
+      </div>
+    </div>
+    <p id="rbody"></p>
+    <div class="bars" id="bars" aria-label="職種ごとの適性"></div>
+    <div class="facts">
+      <div><h3>主な仕事</h3><ul id="rtasks"></ul></div>
+      <div><h3>活きる経験</h3><ul id="rskills"></ul></div>
+      <div><h3>応募書類で書くと強いこと</h3><p id="rpitch"></p></div>
+    </div>
+    <div class="cta">
+      <a class="btn" href="../" data-track="jobs_link_click" data-track-cta-position="shindan-result">いま出ている求人を見る</a>
+      <div class="row2">
+        <a class="btn ghost" id="share" href="#" target="_blank" rel="noopener" data-track="shindan_share_click">結果をXでシェア</a>
+        <button class="btn ghost" id="again">もう一度診断する</button>
+      </div>
+      <a class="btn ghost" href="https://note.com/jobsoccer/n/nb725ec203e18" target="_blank" rel="noopener" data-track="note_cta_click" data-track-cta-position="shindan-result">書類選考を通すための書き方（note）</a>
+      <p class="note">LINEのメニューから、いつでも最新の求人一覧を開けます。求人一覧は毎週自動で更新しています。</p>
+      <a class="btn ghost" href="../line/" data-track="line_cta_click" data-track-cta-position="shindan-result">まだ友だちでない方はこちら</a>
+    </div>
+  </section>
+
+  <footer>ジョブサカ｜Jリーグクラブのフロントスタッフ求人メディア<br>このサイトはアクセス解析にGoogleアナリティクスを利用しています。</footer>
+</main>
+
+<script>
+(() => {
+  const TYPES = {
+    sales:  { name: 'パートナー営業', catch: 'クラブの収入をつくる人',
+      body: '地元企業にクラブの価値を提案し、スポンサーになってもらう仕事です。入場料やグッズと並ぶ、クラブの大きな収入源を担います。',
+      tasks: ['地元企業への協賛提案と契約', '看板・ユニフォーム・冠試合などのメニューづくり', '契約後の関係づくりと更新の提案'],
+      skills: ['法人営業・代理店での提案経験', '提案書づくり・プレゼン', '目標数字を追ってきた経験'],
+      pitch: '「どんな相手に、何を提案して、いくら決めたか」を数字で書く。クラブ側は、企業の担当者とすぐに話せる人を探しています。' },
+    pr:     { name: '広報・デジタル', catch: 'クラブの声を届ける人',
+      body: '公式SNSやサイト、取材対応を通じて、クラブと選手の魅力を発信する仕事です。試合の日も、そうでない日も、ファンとの接点をつくります。',
+      tasks: ['公式SNS・サイトの運用', 'リリース文の作成と取材対応', '選手の写真・動画コンテンツの制作'],
+      skills: ['編集・ライティング', '写真・動画の撮影と編集', 'SNS運用と数字の振り返り'],
+      pitch: '自分が作った投稿や記事を実物で見せる。反応の数字と「なぜそう作ったか」を添えると伝わります。' },
+    home:   { name: 'ホームタウン・普及', catch: '地域とクラブをつなぐ人',
+      body: '自治体や学校、商店街と一緒に、クラブを地域の財産にしていく仕事です。サッカー教室や社会連携活動「シャレン！」もここに入ります。',
+      tasks: ['自治体・学校・企業との連携事業', 'サッカー教室や地域イベントの企画運営', '社会貢献活動の企画と報告'],
+      skills: ['教育・行政・NPOでの経験', 'イベントの企画運営', '立場の違う人たちの調整'],
+      pitch: '地域の人と一緒に何かを形にした経験を書く。関わった人数や続いた期間が具体的だと強いです。' },
+    ticket: { name: 'チケット・マーケティング', catch: 'スタジアムを満員にする人',
+      body: 'チケットの価格や売り方を考え、初めての人をリピーターに育てる仕事です。販売データを見て、次の手を決めます。',
+      tasks: ['チケットの価格と席種の設計', '販売データ・来場者データの分析', '集客キャンペーンとファンクラブ施策'],
+      skills: ['EC・CRM・会員サービスの運用', 'データ分析（Excel・BIツール）', '広告運用・キャンペーン設計'],
+      pitch: '「何を変えたら、数字がどう動いたか」を1つ書く。改善を回した経験が、そのままクラブの集客に置き換えられます。' },
+    ops:    { name: '試合運営', catch: '試合の日を無事に回す人',
+      body: 'ホームゲームの日に、会場設営から警備、入退場の動線までを取り仕切る仕事です。何万人が安全に帰れたら成功です。',
+      tasks: ['試合日の会場設営と進行管理', '警備・導線・ボランティアの調整', 'リーグの運営規定に沿った準備'],
+      skills: ['イベント・施工・ホテル・物流の経験', '当日のトラブル対応', '多人数のシフトと段取り'],
+      pitch: '大人数や大きな現場を回した経験を、規模の数字と一緒に書く。週末・夜の勤務に前向きなことも伝えておくと安心されます。' },
+    admin:  { name: '管理部門（経理・人事・総務）', catch: 'クラブの土台を支える人',
+      body: '経理や人事、契約の管理で、クラブが続いていくための土台をつくる仕事です。Jリーグのクラブライセンスに関わる書類も扱います。',
+      tasks: ['経理・決算・予算管理', '採用・労務・給与', '契約書の管理と総務全般'],
+      skills: ['経理・人事・法務の実務', '正確な事務処理', '規程やルールを整えた経験'],
+      pitch: '扱ってきた業務の範囲と、仕組みを整えて楽にした経験を書く。少人数で幅広く担える人は重宝されます。' },
+  };
+
+  const Q = [
+    { q: '試合の日、スタジアムで一番気になるのは？', a: [
+      ['看板やビジョンに出ている企業', { sales: 2 }],
+      ['SNSに上がる写真や選手のコメント', { pr: 2 }],
+      ['入場ゲートの行列や人の流れ', { ops: 2 }],
+      ['空いている席の場所と、来ている客層', { ticket: 2 }] ] },
+    { q: 'これまでの仕事で褒められたことに近いのは？', a: [
+      ['数字をつくってきた（受注・売上）', { sales: 2 }],
+      ['文章や資料がわかりやすい', { pr: 1, admin: 1 }],
+      ['段取りとトラブル対応', { ops: 2 }],
+      ['ミスなく正確に処理する', { admin: 2 }] ] },
+    { q: '休みの日の過ごし方で近いのは？', a: [
+      ['人に会って話す', { sales: 1, home: 1 }],
+      ['写真や動画を撮って編集する', { pr: 2 }],
+      ['地域のイベントやボランティアに行く', { home: 2 }],
+      ['家計簿や成績のデータを眺める', { ticket: 1, admin: 1 }] ] },
+    { q: '応援するクラブの課題で、自分が一番解決したいのは？', a: [
+      ['クラブの収入を増やしたい', { sales: 2 }],
+      ['クラブを知っている人を増やしたい', { pr: 1, ticket: 1 }],
+      ['地元でもっと愛されてほしい', { home: 2 }],
+      ['働く人が長く続けられる組織にしたい', { admin: 2 }] ] },
+    { q: 'これなら苦にならない、と思えるのは？', a: [
+      ['週末や夜の勤務が多い', { ops: 2 }],
+      ['断られても、すぐ次に行ける', { sales: 2 }],
+      ['子どもや高齢の人と接する', { home: 2 }],
+      ['同じ作業を正確にくり返す', { admin: 2 }] ] },
+    { q: '一番使いこなせる道具は？', a: [
+      ['スプレッドシートの集計', { ticket: 1, admin: 1 }],
+      ['カメラや画像・動画の編集ソフト', { pr: 2 }],
+      ['電話と名刺', { sales: 2 }],
+      ['トランシーバーとチェックリスト', { ops: 2 }] ] },
+    { q: 'チームの中で自然に担っている役割は？', a: [
+      ['先頭に立って引っ張る', { sales: 1, ops: 1 }],
+      ['外に向けて伝える', { pr: 2 }],
+      ['人と人をつなぐ・調整する', { home: 1, ops: 1 }],
+      ['後ろから支える・整える', { admin: 2 }] ] },
+    { q: '一番うれしい瞬間は？', a: [
+      ['大きな契約が決まったとき', { sales: 2 }],
+      ['自分の投稿がたくさん見られたとき', { pr: 2 }],
+      ['何も起きずに試合が終わったとき', { ops: 2 }],
+      ['初めて来た人が、また来てくれたとき', { ticket: 2 }] ] },
+    { q: 'これから身につけたいのは？', a: [
+      ['マーケティングとデータ分析', { ticket: 2 }],
+      ['企画とプレゼン', { sales: 1, pr: 1 }],
+      ['地域行政や教育の知識', { home: 2 }],
+      ['会計や労務の知識', { admin: 2 }] ] },
+    { q: 'クラブで働きたい理由に一番近いのは？', a: [
+      ['地元を元気にしたい', { home: 2 }],
+      ['満員のスタジアムを見たい', { ticket: 1, ops: 1 }],
+      ['クラブの価値をお金に換えたい', { sales: 2 }],
+      ['クラブの思いを届けたい', { pr: 2 }] ] },
+  ];
+
+  // 各職種の満点（設問ごとの最大値の合計）で割って公平にする
+  const MAX = {};
+  Object.keys(TYPES).forEach(k => {
+    MAX[k] = Q.reduce((s, q) => s + Math.max(0, ...q.a.map(([, p]) => p[k] || 0)), 0);
+  });
+
+  const $ = id => document.getElementById(id);
+  const views = { start: $('start'), quiz: $('quiz'), result: $('result') };
+  const show = v => Object.entries(views).forEach(([k, el]) => (el.hidden = k !== v));
+
+  let idx = 0, answers = [];
+
+  function renderQ() {
+    const q = Q[idx];
+    $('qnum').textContent = `Q${idx + 1} / ${Q.length}`;
+    $('qmin').textContent = idx < Q.length / 2 ? '前半' : '後半';
+    $('ball').style.left = `calc(${(idx / Q.length) * 100}% + 4px)`;
+    $('qtext').textContent = q.q;
+    const box = $('opts');
+    box.innerHTML = '';
+    q.a.forEach(([label], i) => {
+      const b = document.createElement('button');
+      b.className = 'opt';
+      b.id = `opt-${idx}-${i}`;
+      b.innerHTML = `<span class="key">${'ABCD'[i]}</span><span></span>`;
+      b.lastChild.textContent = label;
+      b.addEventListener('click', () => pick(i));
+      box.appendChild(b);
+    });
+    $('back').disabled = idx === 0;
+  }
+
+  function pick(i) {
+    answers[idx] = i;
+    if (idx < Q.length - 1) { idx++; renderQ(); box0(); }
+    else { renderResult(answers, false); track('shindan_complete', { result_type: score(answers)[0].k }); }
+  }
+  function box0() { const f = $('opts').firstChild; if (f) f.focus({ preventScroll: true }); }
+
+  function score(ans) {
+    const s = Object.fromEntries(Object.keys(TYPES).map(k => [k, 0]));
+    ans.forEach((ai, qi) => Object.entries(Q[qi].a[ai][1]).forEach(([k, v]) => (s[k] += v)));
+    return Object.keys(TYPES)
+      .map(k => ({ k, pct: Math.round((s[k] / MAX[k]) * 100) }))
+      .sort((a, b) => b.pct - a.pct);
+  }
+
+  function renderResult(ans, isSample) {
+    const ranked = score(ans);
+    const top = TYPES[ranked[0].k];
+    $('sampleTag').hidden = !isSample;
+    $('rpct').textContent = ranked[0].pct + '%';
+    $('rname').textContent = top.name;
+    $('rcatch').textContent = top.catch;
+    $('rbody').textContent = top.body;
+    const fill = (id, arr) => { const ul = $(id); ul.innerHTML = ''; arr.forEach(t => { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); }); };
+    fill('rtasks', top.tasks);
+    fill('rskills', top.skills);
+    $('rpitch').textContent = top.pitch;
+    const bars = $('bars');
+    bars.innerHTML = '';
+    ranked.forEach((r, i) => {
+      const row = document.createElement('div');
+      row.className = 'bar' + (i === 0 ? ' top' : '');
+      row.innerHTML = `<span></span><div class="track"><div class="fill" style="width:${r.pct}%"></div></div><span class="pct">${r.pct}%</span>`;
+      row.firstChild.textContent = TYPES[r.k].name.replace('（経理・人事・総務）', '');
+      bars.appendChild(row);
+    });
+    const text = `Jクラブの仕事診断、わたしは「${top.name}」タイプでした（適性${ranked[0].pct}%）。\n#ジョブサカ #Jリーグで働く`;
+    $('share').href = 'https://x.com/intent/post?text=' + encodeURIComponent(text);
+    show('result');
+    if (!isSample) window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  const track = (name, params) => { if (typeof window.gtag === 'function') window.gtag('event', name, params || {}); };
+
+  $('go').addEventListener('click', () => { track('shindan_start'); idx = 0; answers = []; renderQ(); show('quiz'); box0(); });
+  $('back').addEventListener('click', () => { if (idx > 0) { idx--; renderQ(); } });
+  $('again').addEventListener('click', () => { show('start'); window.scrollTo({ top: 0 }); });
+
+  // #sample で回答例の結果を表示（作り手の確認用）
+  if (location.hash === '#sample') renderResult([3, 1, 3, 1, 0, 0, 1, 3, 0, 1], true);
+})();
+</script>
+
+<script>
+(function () {
+  document.addEventListener('click', function (ev) {
+    var t = ev.target;
+    if (!t || typeof t.closest !== 'function') return;
+    var el = t.closest('[data-track]');
+    if (!el || typeof window.gtag !== 'function') return;
+    var params = {};
+    for (var i = 0; i < el.attributes.length; i++) {
+      var a = el.attributes[i];
+      if (a.name.indexOf('data-track-') === 0) {
+        params[a.name.slice(11).replace(/-/g, '_')] = a.value;
+      }
+    }
+    window.gtag('event', el.getAttribute('data-track'), params);
+  }, true);
+})();
+</script>
+</body>
+</html>
