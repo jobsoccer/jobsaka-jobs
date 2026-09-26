@@ -238,7 +238,8 @@ def render_footer_cta() -> str:
     <h2>求人情報を、LINEでも</h2>
     <p>求人一覧ページはリッチメニューからいつでも開けます。
     月1回、その時点の新着求人をまとめてお届けするほか、
-    登録特典として<strong>転職活動に役立つ動画10本</strong>を無料でお送りしています。</p>
+    登録特典として、友だち限定の<strong>クラブ職種診断</strong>（10問・約2分）をお送りしています。
+    6つの職種のうち、どれが向いているかがわかります。</p>
     <a class="btn btn-line" href="{LINE_ADD_URL}" target="_blank" rel="noopener noreferrer" data-track="line_cta_click" data-track-cta-position="footer-cta">LINEで受け取る<span class="btn-arrow" aria-hidden="true">→</span></a>
   </div>
 </section>"""
