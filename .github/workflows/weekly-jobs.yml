@@ -36,10 +36,13 @@ jobs:
       - name: 求人ページ（docs/index.html）を生成
         run: python3 generate_page.py
 
+      - name: クラブ別アーカイブ（jleague_jobs_by_club.md）を更新
+        run: python3 generate_by_club.py
+
       - name: 変更をリポジトリに保存
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add jleague_jobs.md docs/index.html
+          git add jleague_jobs.md docs/index.html jleague_jobs_by_club.md
           git diff --cached --quiet || git commit -m "今週のJリーグ求人ページを更新 [skip ci]"
           git push
