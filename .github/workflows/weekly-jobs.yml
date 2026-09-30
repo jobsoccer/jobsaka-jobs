@@ -27,7 +27,7 @@ jobs:
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          prompt: "/jleague-jobs jleague_jobs.md を最新の状態に更新してください。既存の求人は重複チェックし、掲載終了しているものは除外してください。"
+          prompt: "/jleague-jobs jleague_jobs.md を最新の状態に更新してください。既存の求人は重複チェックし、掲載終了しているものは除外してください。最後に実行内容を collect_report.md に書き出してください。"
           claude_args: |
             --allowedTools "WebFetch,WebSearch,Read,Write,Edit"
             --max-turns 90
@@ -47,5 +47,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add jleague_jobs.md docs/index.html jleague_jobs_by_club.md
+          if [ -f collect_report.md ]; then git add collect_report.md; fi
           git diff --cached --quiet || git commit -m "今週のJリーグ求人ページを更新 [skip ci]"
           git push
