@@ -21,6 +21,10 @@ GA_MEASUREMENT_ID = "G-355S4P1X4K"
 NOTE_SET_URL = "https://note.com/jobsoccer/m/m380a8dc93253"
 LINE_ADD_URL = "https://jobsoccer.github.io/jobsaka-jobs/line/"
 SHINDAN_URL = "https://jobsoccer.github.io/jobsaka-jobs/shindan/"
+# 求人カードの「応募前に読む」リンク先（看板記事・書類選考突破マニュアル ¥1,000）。
+# LINE配信ではnoteへのリンクが0クリックで、押されるのは求人一覧だけだった（2026-08-11・09-16）。
+# 応募を決めた瞬間の人に、カードの中で1本だけ見せる。
+PREPARE_NOTE_URL = "https://note.com/jobsoccer/n/nb725ec203e18"
 # 求人カードを何件表示したあとに、リスト内CTAを差し込むか（複数指定可）。
 # 深くスクロールする人にも届くよう、序盤と中盤の2箇所に置く。
 INLINE_CTA_POSITIONS = {3: "inline-1", 15: "inline-2"}
@@ -181,6 +185,13 @@ def render_card(entry: dict) -> str:
         job_name = html.escape(entry["club"] + "｜" + entry["role"], quote=True)
         link_html = f'<a class="btn" href="{safe_url}" target="_blank" rel="noopener noreferrer" data-track="job_apply_click" data-track-job-name="{job_name}">求人を見る<span class="btn-arrow" aria-hidden="true">→</span></a>'
 
+    job_name_attr = html.escape(entry["club"] + "｜" + entry["role"], quote=True)
+    prepare_html = (
+        f'<a class="btn btn-outline" href="{PREPARE_NOTE_URL}" target="_blank" rel="noopener noreferrer"'
+        f' data-track="note_cta_click" data-track-cta-position="card-prepare" data-track-job-name="{job_name_attr}">'
+        '応募前に読む：書類選考突破マニュアル</a>'
+    )
+
     line_nudge_html = (
         f'<a class="card-line-link" href="{LINE_ADD_URL}" target="_blank" rel="noopener noreferrer"'
         ' data-track="line_cta_click" data-track-cta-position="card">'
@@ -201,6 +212,7 @@ def render_card(entry: dict) -> str:
       <div class="tags">{tags_html}</div>
       <div class="card-actions">
         {link_html}
+        {prepare_html}
         {line_nudge_html}
       </div>
     </li>"""
@@ -535,6 +547,14 @@ def render_html(entries: list[dict], updated_at: str) -> str:
     transform: translateY(-1px);
     box-shadow: 0 10px 22px rgba(10, 122, 65, 0.34);
   }}
+  .btn-outline {{
+    background: transparent;
+    color: var(--accent);
+    border: 1.5px solid var(--accent);
+    box-shadow: none;
+    padding: 8.5px 16px;
+  }}
+  .btn-outline:hover {{ box-shadow: 0 6px 16px rgba(10, 122, 65, 0.18); }}
   .btn-arrow {{ transition: transform 0.15s ease; }}
   .btn:hover .btn-arrow {{ transform: translateX(3px); }}
   .card-actions {{
