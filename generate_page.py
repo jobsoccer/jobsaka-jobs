@@ -192,12 +192,6 @@ def render_card(entry: dict) -> str:
         '応募前に読む：書類選考突破マニュアル</a>'
     )
 
-    line_nudge_html = (
-        f'<a class="card-line-link" href="{LINE_ADD_URL}" target="_blank" rel="noopener noreferrer"'
-        ' data-track="line_cta_click" data-track-cta-position="card">'
-        '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.5 2 2 5.6 2 10.1c0 4 3.6 7.4 8.4 8 .3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c-.1.3-.2 1.1 1 .6s6.3-3.7 8.6-6.4c1.6-1.7 2.2-3.5 2.2-4.6C23 5.6 18.5 2 12 2z"/></svg>'
-        '新着求人をLINEで受け取る</a>'
-    )
 
     return f"""
     <li class="card" id="{html.escape(entry["slug"], quote=True)}">
@@ -213,7 +207,6 @@ def render_card(entry: dict) -> str:
       <div class="card-actions">
         {link_html}
         {prepare_html}
-        {line_nudge_html}
       </div>
     </li>"""
 
@@ -563,18 +556,6 @@ def render_html(entries: list[dict], updated_at: str) -> str:
     flex-wrap: wrap;
     gap: 4px 16px;
   }}
-  .card-line-link {{
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: 16px;
-    color: #06c755;
-    font-weight: 600;
-    font-size: 0.78rem;
-    text-decoration: none;
-  }}
-  .card-line-link:hover {{ text-decoration: underline; }}
-  .card-line-link svg {{ flex: none; }}
 
   /* ===== CTA ===== */
   .btn-line {{
