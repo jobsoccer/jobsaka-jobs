@@ -5,10 +5,11 @@
 ## 仕組み
 
 1. GitHub Actions（毎週月・木 7:00 JST）が起動
-2. `jleague-jobs` スキル（`.claude/skills/jleague-jobs/`）がIndeed Japan・スポジョバ／スポタビからJリーグクラブのフロントスタッフ求人を収集し、`jleague_jobs.md` を更新（掲載終了分は削除）
-3. `generate_page.py` が `jleague_jobs.md` を読み込み、`docs/index.html`（今週のJリーグ求人ページ）を生成
-4. `generate_by_club.py` が `jleague_jobs.md` の新規求人だけを `jleague_jobs_by_club.md`（クラブ別の蓄積アーカイブ）に追記。`jleague_jobs.md` から削除された求人もこちらには残る
-5. 変更をリポジトリにコミット・push → GitHub Pagesが自動反映
+2. `fetch_sakkarin.py` がさっかりんの「求人」トピック（クラブ公式の求人のお知らせ）から直近45日分を `sakkarin_feed.md` に書き出す（コミットはしない）
+3. `jleague-jobs` スキル（`.claude/skills/jleague-jobs/`）が、さっかりんのフィード・転職サイト（マイナビ転職・doda・リクナビNEXT・ビズリーチ等をWeb検索経由）・Indeed Japan・スポジョバ／スポタビからJリーグクラブのフロントスタッフ求人を収集し、`jleague_jobs.md` を更新（掲載終了分は削除）
+4. `generate_page.py` が `jleague_jobs.md` を読み込み、`docs/index.html`（今週のJリーグ求人ページ）を生成
+5. `generate_by_club.py` が `jleague_jobs.md` の新規求人だけを `jleague_jobs_by_club.md`（クラブ別の蓄積アーカイブ）に追記。`jleague_jobs.md` から削除された求人もこちらには残る
+6. 変更をリポジトリにコミット・push → GitHub Pagesが自動反映
 
 公開URL（GitHub Pages有効化後）: `https://jobsoccer.github.io/jobsaka-jobs/`
 

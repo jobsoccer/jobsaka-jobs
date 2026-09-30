@@ -19,6 +19,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: さっかりんの求人フィード（クラブ公式のお知らせ）を取得
+        run: python3 fetch_sakkarin.py
+
       - name: jleague-jobsスキルで求人を収集
         uses: anthropics/claude-code-action@v1
         with:
@@ -27,7 +30,7 @@ jobs:
           prompt: "/jleague-jobs jleague_jobs.md を最新の状態に更新してください。既存の求人は重複チェックし、掲載終了しているものは除外してください。"
           claude_args: |
             --allowedTools "WebFetch,WebSearch,Read,Write,Edit"
-            --max-turns 60
+            --max-turns 90
 
       - uses: actions/setup-python@v5
         with:
