@@ -20,6 +20,7 @@ JST = timezone(timedelta(hours=9))
 GA_MEASUREMENT_ID = "G-355S4P1X4K"
 NOTE_SET_URL = "https://note.com/jobsoccer/m/m380a8dc93253"
 LINE_ADD_URL = "https://jobsoccer.github.io/jobsaka-jobs/line/"
+SHINDAN_URL = "https://jobsoccer.github.io/jobsaka-jobs/shindan/"
 # 求人カードを何件表示したあとに、リスト内CTAを差し込むか（複数指定可）。
 # 深くスクロールする人にも届くよう、序盤と中盤の2箇所に置く。
 INLINE_CTA_POSITIONS = {3: "inline-1", 15: "inline-2"}
@@ -241,6 +242,12 @@ def render_footer_cta() -> str:
     登録特典として、友だち限定の<strong>クラブ職種診断</strong>（10問・約2分）をお送りしています。
     6つの職種のうち、どれが向いているかがわかります。</p>
     <a class="btn btn-line" href="{LINE_ADD_URL}" target="_blank" rel="noopener noreferrer" data-track="line_cta_click" data-track-cta-position="footer-cta">LINEで受け取る<span class="btn-arrow" aria-hidden="true">→</span></a>
+  </div>
+  <div class="cta-block">
+    <h2>まずは診断だけ、試してみる</h2>
+    <p>Jリーグクラブのフロント6職種のうち、あなたに向いているのはどれか。
+    10問・約2分で診断できます。LINE登録は不要です。</p>
+    <a class="btn" href="{SHINDAN_URL}" target="_blank" rel="noopener noreferrer" data-track="shindan_cta_click" data-track-cta-position="footer-cta">クラブ職種診断をやってみる<span class="btn-arrow" aria-hidden="true">→</span></a>
   </div>
 </section>"""
 
